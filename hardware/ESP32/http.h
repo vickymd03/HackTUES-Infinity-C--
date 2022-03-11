@@ -1,0 +1,15 @@
+#ifndef _HTTP_H_
+#define _HTTP_H_
+
+#include <stdint.h>
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+QueueHandle_t http_file_queue;
+
+void send_request_for_controls(char *buf);
+void send_ov7725_data_to_API(uint8_t* file, uint16_t size_of_file);
+
+////////////////////////////////////////////////////////////////////////////////
+#endif /* ! _HTTP_H_ */
