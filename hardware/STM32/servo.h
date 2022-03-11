@@ -1,11 +1,11 @@
-/* USER CODE BEGIN Header */
-/**
+/* USER CODE BEGIN Header /
+/*
   ******************************************************************************
   *                                 GreenBo         
   *                           The Embedded Experts
   ******************************************************************************
-  * @file           : main.h
-  * @brief          : Header for main.c file.
+  * @file           : BMP.h
+  * @brief          : Header for servo.c file.
   *                   This file contains the common defines of the application.
   ******************************************************************************
   * @attention
@@ -19,57 +19,46 @@
   *                        opensource.org/licenses/BSD-3-Clause
   *
   ******************************************************************************
-  */
-
+  /
+/ USER CODE END Header */
 
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __MAIN_H
-#define __MAIN_H
+#ifndef __SERVO_H
+#define __SERVO_H
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "stm32h7xx_hal.h"
-#include "stm32h7xx_ll_dma.h"
+#include "main.h"
 
-/* Private includes ----------------------------------------------------------*/
-
-/* Private define ------------------------------------------------------------*/
-#ifdef TFT96
-// QQVGA
-#define FrameWidth 160
-#define FrameHeight 120
-#elif TFT18
-// QQVGA2
-#define FrameWidth 128
-#define FrameHeight 160
-#endif
+/* Private defines -----------------------------------------------------------*/
 
 /* Exported types ------------------------------------------------------------*/
 
-/* Exported constants --------------------------------------------------------*/
-extern uint16_t pic[FrameWidth][FrameHeight];
-extern uint8_t sendBuf[80 + (FrameWidth * FrameHeight * 2)];
-/* Exported macro ------------------------------------------------------------*/
+/* Exported constants --------------------------------------------------------/
+/ USER CODE BEGIN EC */
+
+/* USER CODE END EC */
+
+/* Exported macro ------------------------------------------------------------/
+/ USER CODE BEGIN EM */
+
+/* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
-void Error_Handler(void);
-/* Private defines -----------------------------------------------------------*/
-#define PE3_Pin GPIO_PIN_3
-#define PE3_GPIO_Port GPIOE
-#define KEY_Pin GPIO_PIN_13
-#define KEY_GPIO_Port GPIOC
-#define LCD_CS_Pin GPIO_PIN_11
-#define LCD_CS_GPIO_Port GPIOE
-#define LCD_WR_RS_Pin GPIO_PIN_13
-#define LCD_WR_RS_GPIO_Port GPIOE
+void Init_TIM2();
+
+/* USER CODE BEGIN EFP */
+
+/* USER CODE END EFP */
+
 
 #ifdef __cplusplus
 }
 #endif
 
-#endif /* __MAIN_H */
+#endif /* __SERVO_H */
 
-/************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/
+/************************ (C) COPYRIGHT GreenBo ************END OF FILE/

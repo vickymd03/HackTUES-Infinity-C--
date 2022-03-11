@@ -149,10 +149,34 @@ void BitMapFileHeader_init(void)
 
 uint8_t Calculate_CRC(void)
 {
+  uint8_t crc = 0;
+
+  for(int i = 0; i < sizeof(sendBuf); i++)
+  {
+    crc += sendBuf[i];
+  }
+  return crc;
 }
 
 void Prepare_RGBdata(void)
 {
+  uint8_t tempData;
+  uint32_t k = sizeof(BitMapFileHeader);
+
+  for(uint32_t j = 0; j < FrameWidth; j++)
+  {
+    for(uint32_t i = 0; i < FrameHeight; i++)
+    {
+      //tempData = (uint8_t)pic[j][i];
+      tempData = (uint8_t)(pic[j][i] >> 8);
+      sendBuf[k] = tempData;
+      k++;
+      //tempData = (uint8_t)(pic[j][i] >> 8);
+      tempData = (uint8_t)pic[j][i];
+      sendBuf[k] = tempData;
+      k++;
+    }
+  }
 }
 
 
