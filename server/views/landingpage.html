@@ -11,32 +11,43 @@
 		<script src="helpers.js"></script>
     </head>
     <body>
-        <canvas id="VideoCanvas" width="500" height="350" style="border:1px solid white;"></canvas>
-        <canvas id="LogsCanvas" class="LogsCanvas" width="300" height="350"></canvas>
-		<h2 style="color:white">Power off/on</h2>
-		<label class="switch">
-			<input type="checkbox">
-			<span class="slider round" ></span>
-		</label><span class="br"></span>
-        <div id="mySidenav" class="sidenav">
-            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
-            <a href="#" style ='text-decoration:none;'>Send</a>
-        </div> 
-		<div class="btn-group">
-			<button>&#127777 21 &#8451</button>
-			<button>5 V</button>
-			<button>5 V</button>
-		</div><br></br>
+        <div class="Container">
+			<canvas id="VideoCanvas" width="500" height="350" style="border:1px solid white;"></canvas>
+			<canvas id="LogsCanvas" class="LogsCanvas" width="300" height="350"></canvas><br></br>
+			<div class="style=display: flex;">
+				<h2 style="color:white; display:inline-block;">Power off/on&emsp;&emsp;&emsp;</h2>
+				<label class="switch">
+					<input type="checkbox">
+					<span class="slider round" ></span>
+				</label><span class="br"></span>
+			</div>
+			<h2 style="color:white; display:inline-block;">Solar panel off/on &ensp;</h2>
+			<label class="switch_solar">
+				<input type="checkbox">
+				<span class="slider_solar round" ></span>
+			</label><span class="br2"></span>
+       
+			<div id="mySidenav" class="sidenav">
+				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times</a>
+				<a href="#" style ='text-decoration:none;'>Send</a>
+			</div>
+			<div class="btn-group">
+				<button>&#127777 21 &#8451</button>
+				<button>5 V</button>
+				<button>5 V</button>
+			</div><br></br>
 		
-		<select class="selection" id="select-state" placeholder="Select ">
-			<optgroup label="Camera">
-			<option value="1">Camera 1</option>
-			<option value="2">Camera 2</option>
-			</optgroup>
-		</select>
+		
+			<select class="selection" id="select-state" placeholder="Select ">
+				<optgroup label="Choose camera">
+				<option value="1">Camera 1</option>
+				<option value="2">Camera 2</option>
+				</optgroup>
+			</select>
 
-        <div id="main">
-            <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
-        </div>
+			<div id="main">
+				<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
+			</div>
+		</div>
     </body>
 </html>

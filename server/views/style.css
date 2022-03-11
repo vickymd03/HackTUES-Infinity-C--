@@ -1,3 +1,28 @@
+body, html {
+  height: 100%;
+}
+
+.Container{
+    width: 100%;
+    height: auto;
+}
+#right {
+  height: 100%;
+}
+.left {
+  height: 100vh;
+  width: 50%;
+  background-color: grey;
+  float: left;
+}
+
+.right {
+  height: 100vh;
+  width: 50%;
+  background-color: red;
+  float: right;
+}
+
 body {
   background-image: url("https://blenderartists.org/uploads/default/original/4X/7/e/2/7e2d7bea4ac21388c4a96e1371f375c4ce00094b.jpg");
   background-repeat: no-repeat;
@@ -14,8 +39,14 @@ body {
   display: block;
   margin-bottom: 0em;
 }
-
-
+.br2 {
+  display: block;
+  margin-bottom: 2em;
+}
+.br3 {
+  display: block;
+  margin-bottom: 3em;
+}
 .LogsCanvas{
   right: 58%;
   border:1px solid white;
@@ -24,8 +55,7 @@ body {
 
 .switch {
   position: absolute;
-  top: 59%;
-  left: 13.5%;
+  
   display: inline-block;
   width: 60px;
   height: 34px;
@@ -61,6 +91,14 @@ body {
     transition: .4s;
 }
 
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 input:checked + .slider {
   background-color: #666699;
 }
@@ -76,12 +114,65 @@ input:checked + .slider:before {
 }
 
 
-.slider.round {
+
+.switch_solar {
+  position: absolute;
+  display: inline-block;
+  width: 60px;
+  height: 34px;
+}
+
+.switch_solar input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider_solar {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #a3a3c2;
+  -webkit-transition: .4s;
+  transition: .4s;
+}
+
+.slider_solar:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #f0f0f5;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+.slider_solar.round {
   border-radius: 34px;
 }
 
-.slider.round:before {
+.slider_solar.round:before {
   border-radius: 50%;
+}
+
+input:checked + .slider_solar {
+  background-color: #666699;
+}
+
+input:focus + .slider_solar {
+  box-shadow: 0 0 1px #8585ad;
+}
+
+input:checked + .slider_solar:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+
 }
 
 
@@ -123,12 +214,14 @@ input:checked + .slider:before {
 
 
 .btn-group button {
+  width: 104px;
   background-color: #666699;
   border: #d1b3ff;
   color: white; 
   padding: 10px 24px; 
   cursor: pointer; 
   float: left; 
+  font-size: 14px;
 }
 
 .btn-group button:not(:last-child) {
@@ -143,7 +236,7 @@ input:checked + .slider:before {
 }
 
 .selection {
-  width: 270px;
+  width: 312px;
 }
 
 
