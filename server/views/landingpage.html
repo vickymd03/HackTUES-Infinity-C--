@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+        <script src="helpers.js"></script>
+    </head>
+    <body>
+        <canvas id="myCanvas" width="500" height="350" style="border:1px solid white;"></canvas>
+        <div style="text-align:center;width:480px;">
+            <button type="button" class="button"><i class="arrow up"></i></button><span class="br"></span>
+            <button type="button" class="button"><i class="arrow left"></i></button>
+            <button type="button" class="button"><i class="arrow down"></i></button>
+            <button type="button" class="button"><i class="arrow right"></i></button>
+        </div>
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="#" style ='text-decoration:none;'>Send</a>
+        </div>   
+        <div id="main">
+            <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
+        </div>
+    </body>
+</html>
