@@ -5,22 +5,16 @@
 <style>
 
     body {
-        background-image: url('https://wallpapercave.com/wp/wp2742875.jpg');
+        background-image: url('https://blenderartists.org/uploads/default/original/4X/7/e/2/7e2d7bea4ac21388c4a96e1371f375c4ce00094b.jpg');
         background-repeat: no-repeat;
         background-attachment: fixed;
         background-size: cover;
 
     }
-
-    canvas {
-        position: absolute;
-        top: 40%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        border:1px solid #d3d3d3;
-        background-color: #f1f1f1;
-
+    body {
+        font-family: "Lato", sans-serif;
     }
+
     .br {
             display: block;
             margin-bottom: 0em;
@@ -64,86 +58,102 @@
         transform: rotate(45deg);
       - webkit-transform: rotate(45deg);
     }
+    .sidenav {
+        height: 100%;
+        width: 0;
+        position: fixed;
+        z-index: 1;
+        top: 0;
+        right: 0;
+        background-color: #111;
+        overflow-x: hidden;
+        transition: 0.5s;
+        padding-top: 60px;
+        text-decoration: none;
+}
+
+.sidenav a {
+      padding: 8px 8px 8px 32px;
+      text-decoration: none;
+      font-size: 25px;
+      color: #818181;
+      display: block;
+      transition: 0.3s;
+}
+
+.sidenav a:hover {
+  color: #f1f1f1;
+}
+
+.sidenav .closebtn {
+  position: absolute;
+  top: 0;
+  right: 25px;
+  font-size: 36px;
+  margin-left: 50px;
+    text-decoration: none;
+}
+
+#main {
+
+    padding: 16px;
+    position:absolute;
+    top:0;
+    right:0;
+    color: #f2e6ff;
+}
+
+@media screen and (max-height: 450px) {
+  .sidenav {padding-top: 15px;}
+  .sidenav a {font-size: 18px;}
+}
 </style>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 </head>
-<body onload="startGame()">
+<body>
+<canvas id="myCanvas" width="500" height="350" style="border:1px solid white;"></canvas>
+
 <script>
 
-var myGamePiece;
 
-function startGame() {
-    myGamePiece = new component(30, 30, "red", 10, 120);
-    myGameArea.start();
-}
-
-var myGameArea = {
+var Video = {
     canvas : document.createElement("canvas"),
-    start : function() {
-        this.canvas.width = 540;
-        this.canvas.height = 380;
-        this.context = this.canvas.getContext("2d");
-        document.body.insertBefore(this.canvas, document.body.childNodes[0]);
-        this.interval = setInterval(updateGameArea, 20);
-    },
-    clear : function() {
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    stream : function() {
+        this.canvas.width = 500;
+        this.canvas.height = 350;
     }
 }
 
-function component(width, height, color, x, y) {
-    this.width = width;
-    this.height = height;
-    this.speedX = 0;
-    this.speedY = 0;
-    this.x = x;
-    this.y = y;
-    this.update = function() {
-        ctx = myGameArea.context;
-        ctx.fillStyle = color;
-        ctx.fillRect(this.x, this.y, this.width, this.height);
-    }
-    this.newPos = function() {
-        this.x += this.speedX;
-        this.y += this.speedY;
-    }
-}
 
-function updateGameArea() {
-    myGameArea.clear();
-    myGamePiece.newPos();
-    myGamePiece.update();
-}
-
-function moveup() {
-    myGamePiece.speedY = -1;
-}
-
-function movedown() {
-    myGamePiece.speedY = 1;
-}
-
-function moveleft() {
-    myGamePiece.speedX = -1;
-}
-
-function moveright() {
-    myGamePiece.speedX = 1;
-}
-
-function clearmove() {
-    myGamePiece.speedX = 0;
-    myGamePiece.speedY = 0;
-}
 </script>
 <div style="text-align:center;width:480px;">
-  <button type="button" class="button" onmousedown="moveup()" onmouseup="clearmove()" ontouchstart="moveup()"><i class="arrow up"></i></button><span class="br"></span>
-  <button type="button" class="button" onmousedown="moveleft()" onmouseup="clearmove()" ontouchstart="moveleft()"><i class="arrow left"></i></button>
-  <button type="button" class="button" onmousedown="movedown()" onmouseup="clearmove()" ontouchstart="movedown()"><i class="arrow down"></i></button>
-  <button type="button" class="button" onmousedown="moveright()" onmouseup="clearmove()" ontouchstart="moveright()"><i class="arrow right"></i></button>
+  <button type="button" class="button"><i class="arrow up"></i></button><span class="br"></span>
+  <button type="button" class="button"><i class="arrow left"></i></button>
+  <button type="button" class="button"><i class="arrow down"></i></button>
+  <button type="button" class="button"><i class="arrow right"></i></button>
+</div>
+<div id="mySidenav" class="sidenav">
+  <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+  <a href="#" style ='text-decoration:none;'>Send</a>
+
 </div>
 
+<div id="main">
+  <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
+</div>
+
+<script>
+function openNav() {
+  document.getElementById("mySidenav").style.width = "250px";
+  document.getElementById("main").style.marginLeft = "250px";
+}
+
+function closeNav() {
+  document.getElementById("mySidenav").style.width = "0";
+  document.getElementById("main").style.marginLeft= "0";
+}
+</script>
 </body>
 </html>
