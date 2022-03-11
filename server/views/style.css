@@ -9,49 +9,81 @@ body {
   font-family: "Lato", sans-serif;
 }
 
+
 .br {
   display: block;
   margin-bottom: 0em;
 }
 
-.button {
-  background-color: #f2e6ff;
-  border: none;
-  color: white;
-  padding: 16px 32px;
-  text-align: center;
-  font-size: 16px;
-  margin: 4px 2px;
-  opacity: 0.6;
-  transition: 0.3s;
-}
 
-.arrow {
-  border: solid black;
-  border-width: 0 3px 3px 0;
+.LogsCanvas{
+  right: 58%;
+  border:1px solid white;
+ }
+ 
+
+.switch {
+  position: absolute;
+  top: 59%;
+  left: 13.5%;
   display: inline-block;
-  padding: 3px;
+  width: 60px;
+  height: 34px;
 }
 
-.right {
-  transform: rotate(-45deg);
-  -webkit-transform: rotate(-45deg);
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
 }
 
-.left {
-  transform: rotate(135deg);
-  -webkit-transform: rotate(135deg);
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #a3a3c2;
+  -webkit-transition: .4s;
+  transition: .4s;
 }
 
-.up {
-  transform: rotate(-135deg);
-  -webkit-transform: rotate(-135deg);
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 4px;
+    bottom: 4px;
+    background-color: #f0f0f5;
+    -webkit-transition: .4s;
+    transition: .4s;
 }
 
-.down {
-  transform: rotate(45deg);
-  -webkit-transform: rotate(45deg);
+input:checked + .slider {
+  background-color: #666699;
 }
+
+input:focus + .slider {
+  box-shadow: 0 0 1px #8585ad;
+}
+
+input:checked + .slider:before {
+  -webkit-transform: translateX(26px);
+  -ms-transform: translateX(26px);
+  transform: translateX(26px);
+}
+
+
+.slider.round {
+  border-radius: 34px;
+}
+
+.slider.round:before {
+  border-radius: 50%;
+}
+
 
 .sidenav {
   height: 100%;
@@ -88,6 +120,33 @@ body {
   margin-left: 50px;
   text-decoration: none;
 }
+
+
+.btn-group button {
+  background-color: #666699;
+  border: #d1b3ff;
+  color: white; 
+  padding: 10px 24px; 
+  cursor: pointer; 
+  float: left; 
+}
+
+.btn-group button:not(:last-child) {
+  border-right: none; 
+}
+
+
+.btn-group:after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.selection {
+  width: 270px;
+}
+
+
 
 #main {
   padding: 16px;

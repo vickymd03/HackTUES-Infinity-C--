@@ -2,24 +2,39 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css" />
+        <link rel="stylesheet" href="style.css" >
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
-        <script src="helpers.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
+		<script src="helpers.js"></script>
     </head>
     <body>
-        <canvas id="myCanvas" width="500" height="350" style="border:1px solid white;"></canvas>
-        <div style="text-align:center;width:480px;">
-            <button type="button" class="button"><i class="arrow up"></i></button><span class="br"></span>
-            <button type="button" class="button"><i class="arrow left"></i></button>
-            <button type="button" class="button"><i class="arrow down"></i></button>
-            <button type="button" class="button"><i class="arrow right"></i></button>
-        </div>
+        <canvas id="VideoCanvas" width="500" height="350" style="border:1px solid white;"></canvas>
+        <canvas id="LogsCanvas" class="LogsCanvas" width="300" height="350"></canvas>
+		<h2 style="color:white">Power off/on</h2>
+		<label class="switch">
+			<input type="checkbox">
+			<span class="slider round" ></span>
+		</label><span class="br"></span>
         <div id="mySidenav" class="sidenav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
             <a href="#" style ='text-decoration:none;'>Send</a>
-        </div>   
+        </div> 
+		<div class="btn-group">
+			<button>&#127777 21 &#8451</button>
+			<button>5 V</button>
+			<button>5 V</button>
+		</div><br></br>
+		
+		<select class="selection" id="select-state" placeholder="Select ">
+			<optgroup label="Camera">
+			<option value="1">Camera 1</option>
+			<option value="2">Camera 2</option>
+			</optgroup>
+		</select>
+
         <div id="main">
             <span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
         </div>
