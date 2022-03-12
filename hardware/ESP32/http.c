@@ -185,8 +185,8 @@ void send_ov7725_data_to_API(uint8_t* file, uint16_t size_of_file)
 	}
 
 	ESP_LOGI(TAG, "Response: %s", output_buffer);	// TEST
-    if(strstr(output_buffer, "Successfull transaction")){
-        send_controls(&content_length);
+    if(1/*strstr(output_buffer, "Successfull transaction")*/){
+        send_controls((uint8_t*)&output_buffer[0]);
     }
 
 	esp_http_client_cleanup(client);

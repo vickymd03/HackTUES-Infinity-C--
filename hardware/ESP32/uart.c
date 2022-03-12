@@ -20,6 +20,8 @@
 
 
 //int sendData(const char* logName, const char* data);
+#define CONTROLS_DATA_LEN 1028
+uint8_t controls_buffer[CONTROLS_DATA_LEN];
 
 static const char *TAG="example uart";
 static QueueHandle_t uart1_queue;
@@ -149,18 +151,15 @@ static void tx_task(void *arg)
 	static const char *TX_TASK_TAG = "TX_TASK";
 	esp_log_level_set(TX_TASK_TAG, ESP_LOG_INFO);
 
-	uint8_t ACK[5];
+	uint8_t ACK[1];
 
 	while(1){
 		if(tx_queue != 0){
-            for(uint8_t i = 0; i < 5; i++){
-                if(xQueueReceive(tx_queue, &ACK[i], 10)){
-                    printf("\n  %d - %c", ACK[i], ACK[i]);
-                    //uint8_t txBytes = uart_write_bytes(UART_NUM_1, (uint8_t*)"hello", 5);
-                    //ESP_LOGI(TAG, "Send_by_Tx (%d bytes, ACK = \'0x%02x\')", txBytes, ACK[0]);
-                }
+            if(xQueueReceive(tx_queue, &ACK[0], 10)){
+                uint8_t txBytes = uart_write_bytes(UART_NUM_1, &controls_buffer, CONTROLS_DATA_LEN);
+                ESP_LOGI(TAG, "Send_by_Tx %d bytes, %d %d %d", txBytes, controls_buffer[0], controls_buffer[1], controls_buffer[2]);
+                //ESP_LOGI(TAG, "Send_by_Tx (%d bytes, ACK = \'0x%02x\')", txBytes, ACK[0]);
             }
-            uart_write_bytes(UART_NUM_1, &ACK[0], 5);
     	}
 	}
 }
@@ -205,7 +204,11 @@ void start_uart_event(void)
 }
 
 void send_controls(uint8_t *ack_ptr){
-    for(int i = 0; i < sizeof(ack_ptr); i++){
-        xQueueSend(tx_queue, &ack_ptr[i], 1 / portTICK_RATE_MS);
-    }
+    controls_buffer[0] = 0x77;
+    controls_buffer[1] = 0x25;
+    controls_buffer[2] = 0x59;
+    for(int i = 3; i < 1024; i++)
+        controls_buffer[i] = ack_ptr[i - 3];
+    controls_buffer[1027] = 0x59;
+    xQueueSend(tx_queue, &ack_ptr[0], 1 / portTICK_RATE_MS);
 }

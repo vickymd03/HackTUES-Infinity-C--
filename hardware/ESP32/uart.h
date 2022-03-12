@@ -5,6 +5,7 @@
 
 
 ////////////////////////////////////////////////////////////////////////////////
+extern uint8_t controls_buffer[1028];
 
 void send_controls(uint8_t *ack_ptr);
 void start_uart(void);
