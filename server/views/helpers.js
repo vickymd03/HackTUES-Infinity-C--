@@ -16,9 +16,14 @@ function closeNav() {
     document.getElementById("main").style.marginLeft= "0";
 }
 
+$(document).ready(function () {
+    $('select-camera').selectize({
+        sortField: 'text' 
+    });
+});
 
 $(document).ready(function () {
-    $('select').selectize({
+    $('select-controller').selectize({
         sortField: 'text' 
     });
 });

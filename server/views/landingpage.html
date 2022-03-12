@@ -2,52 +2,110 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css" >
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+        <link rel="stylesheet" href="style.css" >
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"></script>
 		<script src="helpers.js"></script>
     </head>
     <body>
-        <div class="Container">
-			<canvas id="VideoCanvas" width="500" height="350" style="border:1px solid white;"></canvas>
-			<canvas id="LogsCanvas" class="LogsCanvas" width="300" height="350"></canvas><br></br>
-			<div class="style=display: flex;">
-				<h2 style="color:white; display:inline-block;">Power off/on&emsp;&emsp;&emsp;</h2>
-				<label class="switch">
-					<input type="checkbox">
-					<span class="slider round" ></span>
-				</label><span class="br"></span>
-			</div>
-			<h2 style="color:white; display:inline-block;">Solar panel off/on &ensp;</h2>
-			<label class="switch_solar">
-				<input type="checkbox">
-				<span class="slider_solar round" ></span>
-			</label><span class="br2"></span>
-       
-			<div id="mySidenav" class="sidenav">
-				<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times</a>
-				<a href="#" style ='text-decoration:none;'>Send</a>
-			</div>
-			<div class="btn-group">
-				<button>&#127777 21 &#8451</button>
-				<button>5 V</button>
-				<button>5 V</button>
-			</div><br></br>
-		
-		
-			<select class="selection" id="select-state" placeholder="Select ">
-				<optgroup label="Choose camera">
-				<option value="1">Camera 1</option>
-				<option value="2">Camera 2</option>
-				</optgroup>
-			</select>
+        <div class="video-stream">
+            <canvas id="VideoCanvas"></canvas>
+        </div>
+        
+        <div class="logs-terminal">
+            <canvas id="LogsCanvas" class="LogsCanvas"></canvas><br></br>
+        </div>
 
-			<div id="main">
-				<span style="font-size:30px;cursor:pointer" onclick="openNav()">&#9776; Menu</span>
-			</div>
-		</div>
+        <div class="stop">
+            <button class="stop-button">stop</button>
+        </div>
+
+        <div class="camera-switch">
+            <select class="selection-1" id="select-camera" placeholder="Select view...">
+                <optgroup label="Select view">
+                    <option value="1">Camera 1</option>
+                    <option value="2">Camera 2</option>
+                </optgroup>
+			</select>
+        </div>
+
+        <div class="monitoring">
+            <div class="temperature">
+                <img src="static files\temperature.png" alt="temperature icon">
+                <p class="temperature-text">25°C</p>
+            </div>
+
+            <div class="solar-panel">
+                <img src="static files\solar-panel.png" alt="solar panel icon">
+                <p class="solar-panel-text">5.3V</p>
+            </div>
+
+            <div class="battery">
+                <img src="static files\battery.png" alt="battery icon">
+                <p class="battery-text">70%</p>
+            </div>
+        </div>
+
+        <div class="control-mode-buttons">
+            <p class="power-mode">Lamp</p>
+            <label class="switch">
+                <input type="checkbox">
+                <span class="slider round" ></span>
+            </label>
+            
+            <p class="power-mode">Headlights</p>
+            <label class="switch-2">
+                <input type="checkbox">
+                <span class="slider round" ></span>
+            </label>
+    
+            <p class="power-mode">Power On / Off</p>
+            <label class="switch-3">
+                <input type="checkbox">
+                <span class="slider round" ></span>
+            </label>
+
+            <p class="power-mode">Solar Panel On / Off</p>
+            <label class="switch-4">
+                <input type="checkbox">
+                <span class="slider round" ></span>
+            </label>
+        </div>
+
+        <div class="moonwalker">
+            <img src="static files\moonwalker.png" alt="moonwalker icon">
+        </div>
+
+        <div class="controllers-switch">
+            <select class="selection-2" id="select-controller" placeholder="Select controller...">
+                <optgroup label="Direction Controllers">
+                    <option value="1">Front Left Wheel</option>
+                    <option value="2">Front Right Wheel</option>
+                    <option value="3">Rear Left Wheel</option>
+                    <option value="4">Rear Right Wheel</option>
+                    <option value="5">Turn Left With Front Wheel</option>
+                    <option value="6">Turn Right With Front Wheel</option>
+                    <option value="7">Turn Left With Rear Wheel</option>
+                    <option value="8">Turn Right With Rear Wheel</option>
+                </optgroup>
+                <optgroup label="Features">
+                    <option value="9">Solar Panel Control</option>
+                    <option value="10">Camera Control</option>
+                    <option value="11">Main Hand</option>
+                    <option value="12">First Shoulder</option>
+                    <option value="13">Second Shoulder</option>
+                    <option value="14">Claw</option>
+                </optgroup>
+			</select>
+            <div class="buttons">
+                <button type="button" class="button-1">–</button>
+                <p class="value">1</p>
+                <button type="button" class="button-2">+</button>
+                <button type="button" class="button-save">SAVE</button>
+            </div>
+        </div>
     </body>
 </html>
