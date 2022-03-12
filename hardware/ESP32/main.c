@@ -36,11 +36,11 @@
 #include "protocol_examples_common.h"
 #include "driver/gpio.h"
 #include "driver/uart.h"
-#include "http.h"
 #include "uart.h"
+#include "http.h"
 
 #include "esp_log.h"
-#include "esp_eth.h"								// receive request
+#include "esp_eth.h"
 #include "esp_http_server.h"
 
 
@@ -69,14 +69,14 @@
 	#define EXAMPLE_STA_WIFI_SSID		"Tech_D3881996"
 	#define EXAMPLE_STA_WIFI_PASS		"FJHPEPJJ"
 #elif defined(EXAMPLE_SSID_Nomber_2)
-	#define EXAMPLE_STA_WIFI_SSID		"M-Tel_37E3"
-	#define EXAMPLE_STA_WIFI_PASS		"485754434A37E34E"
-#elif defined(EXAMPLE_SSID_Nomber_3)
 	#define EXAMPLE_STA_WIFI_SSID		"TiN-Incubator"
 	#define EXAMPLE_STA_WIFI_PASS		""
 #endif
 
 #define EXAMPLE_STA_MAXIMUM_RETRY	5
+
+#define MAX_EVENT_TAB 10
+#define MAX_MEASUREMENT_TAB 50
 
 
 /* FreeRTOS event group to signal when we are connected*/
@@ -92,13 +92,13 @@ static EventGroupHandle_t s_wifi_event_group;
  * using esp_http_server. This file has only startup code.
  * Look in file_server.c for the implementation */
 
-
 ////////////////////////////////////////////////////////////////////////////////
 
 static const char *TAG="example";
 
-
 static int s_retry_num = 0;
+//programData_t programs[21];
+uint32_t ipaddress, ipnetmask, ipgw;
 
 
 static TaskHandle_t task_handles[portNUM_PROCESSORS];
@@ -129,11 +129,9 @@ void main_task(void *arg)
 				send_ov7725_data_to_API(file, 38480);
 			}
 		}
-		if(index_send_event_struct != index_write_event_struct){
-			prepare_buf_for_event_table(&event_struct[index_send_event_struct], (char*)&buf);
+		if(0){
 			send_request_for_controls((char*)&buf);
-		}else if(index_send_measurement_struct != index_write_measurement_struct){
-			prepare_buf_for_measurement_table(&measurement_struct[index_send_measurement_struct], (char*)&buf);
+		}else if(0){
 			send_request_for_controls((char*)&buf);
 		}
 		vTaskDelay(pdMS_TO_TICKS(10));   //Delay for 10 miliseconds
@@ -141,8 +139,42 @@ void main_task(void *arg)
 }
 
 /* Function to initialize SPIFFS */
+static esp_err_t init_spiffs(void)
+{
+    ESP_LOGI(TAG, "Initializing SPIFFS");
 
-/*static void event_handler(void* arg, esp_event_base_t event_base, int32_t event_id, void* event_data)
+    esp_vfs_spiffs_conf_t conf = {
+      .base_path = "/spiffs",
+      .partition_label = NULL,
+      .max_files = 5,   // This decides the maximum number of files that can be created on the storage
+      .format_if_mount_failed = true
+    };
+
+    esp_err_t ret = esp_vfs_spiffs_register(&conf);
+    if (ret != ESP_OK) {
+        if (ret == ESP_FAIL) {
+            ESP_LOGE(TAG, "Failed to mount or format filesystem");
+        } else if (ret == ESP_ERR_NOT_FOUND) {
+            ESP_LOGE(TAG, "Failed to find SPIFFS partition");
+        } else {
+            ESP_LOGE(TAG, "Failed to initialize SPIFFS (%s)", esp_err_to_name(ret));
+        }
+        return ESP_FAIL;
+    }
+
+    size_t total = 0, used = 0;
+    ret = esp_spiffs_info(NULL, &total, &used);
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "Failed to get SPIFFS partition information (%s)", esp_err_to_name(ret));
+        return ESP_FAIL;
+    }
+
+    ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+    return ESP_OK;
+}
+
+static void event_handler(void* arg, esp_event_base_t event_base,
+                                int32_t event_id, void* event_data)
 {
     if (event_base == WIFI_EVENT && event_id == WIFI_EVENT_STA_START) {
         esp_wifi_connect();
@@ -164,8 +196,13 @@ void main_task(void *arg)
         s_retry_num = 0;
         xEventGroupSetBits(s_wifi_event_group, WIFI_CONNECTED_BIT);
     }
-}*/
+}
 
+/* /////// esp_wifi_types.h ///////
+ * typedef union {
+ *    wifi_ap_config_t  ap;
+ *    wifi_sta_config_t sta;
+ * } wifi_config_t; */
 esp_err_t wifi_init_apsta(void)
 {
     s_wifi_event_group = xEventGroupCreate();
@@ -248,6 +285,138 @@ esp_err_t wifi_init_apsta(void)
  * file_server.c */
 esp_err_t start_file_server(const char *base_path);
 
+#if(0)
+void init_programs_data (programData_t *programs)
+{
+	programs->startHour = 0;
+	programs->startMinute = 0;
+	programs->separator1 = ',';
+	programs->endHour = 0;
+	programs->endMinute = 0;
+	programs->separator2 = ',';
+	*((uint8_t*)&programs->days_of_the_week) = 0x00;
+	programs->separator3 = ',';
+	programs->temperature = 0x2D;
+	programs->separator4 = ',';
+	programs->crc = programs->startHour + programs->startMinute + programs->endHour + \
+					programs->endMinute + *((uint8_t*)&programs->days_of_the_week) + programs->temperature;
+	programs->separator5 = '\n';
+}
+
+int make_file_data (char *buf, uint8_t mode)
+{
+	if (mode == 0) {
+		const char *filepath = "/spiffs/program_list.hex";
+		FILE *fd = NULL;
+		struct stat file_stat;
+
+		if (stat(filepath, &file_stat) == -1) {
+			gpio_set_level(BLINK_GPIO, 1);					// DEL
+			for (int i=0; i<21; i++) {
+				init_programs_data(&programs[i]);
+			}
+			fd = fopen(filepath, "w");
+			if (!fd) {
+				gpio_set_level(BLINK_GPIO, 1);
+				return 1;
+			}
+			fwrite(&programs[0], sizeof(programData_t), 21, fd);
+			fclose(fd);
+			gpio_set_level(BLINK_GPIO, 0);					// DEL
+		}
+
+		fd = fopen(filepath, "r");
+		if (!fd) {
+			gpio_set_level(BLINK_GPIO, 1);
+			return 2;
+		}
+		if (fread(&programs[0], sizeof(programData_t), 21, fd) != 21) {
+			gpio_set_level(BLINK_GPIO, 1);
+			return 3;
+		}
+
+		for (int i=0; i<21; i++) {
+			if (programs[i].crc != programs[i].startHour + programs[i].startMinute + programs[i].endHour + \
+										programs[i].endMinute + *((uint8_t*)&programs[i].days_of_the_week) + programs[i].temperature) {
+				init_programs_data(&programs[i]);
+			}
+		}
+		fclose(fd);
+	} else if (mode == 1){
+		char *r;
+		uint8_t n;
+		uint8_t m;
+
+/*		if (stat(filepath, &file_stat) == -1) {
+			for (int i=0; i<21; i++) {
+				if (programs[i].crc != programs[i].startHour + programs[i].startMinute + programs[i].endHour + \
+											programs[i].endMinute + *((uint8_t*)&programs[i].days_of_the_week) + programs[i].temperature) {
+					init_programs_data(&programs[i]);
+				}
+			}
+		}*/
+		r = strstr(buf, "program");
+		if (r != NULL) {
+			if(*(r+9) == '&') {
+				n = (*(r+8) - 0x30);
+			} else {
+				n = ((*(r+8) - 0x30) * 10) + (*(r+9) - 0x30);
+			}
+			n--;
+			r = strstr(buf, "start_time");
+			if (r != NULL) {
+				m = ((*(r+11) - 0x30) * 10) + (*(r+12) - 0x30);
+				programs[n].startHour = m;
+				m = ((*(r+16) - 0x30) * 10) + (*(r+17) - 0x30);
+				programs[n].startMinute = m;
+			}
+			r = strstr(buf, "end_time");
+			if (r != NULL) {
+				m = ((*(r+9) - 0x30) * 10) + (*(r+10) - 0x30);
+				programs[n].endHour = m;
+				m = ((*(r+14) - 0x30) * 10) + (*(r+15) - 0x30);
+				programs[n].endMinute = m;
+			}
+
+			r = strstr(buf, "mon");
+			if (r != NULL) {
+				*((uint8_t*)&programs[n].days_of_the_week) = 0;
+				if (*(r+4) == 'y') programs[n].days_of_the_week.b_monday = 1;
+				if (*(r+10) == 'y') programs[n].days_of_the_week.b_tuesday = 1;
+				if (*(r+16) == 'y') programs[n].days_of_the_week.b_wednesday = 1;
+				if (*(r+22) == 'y') programs[n].days_of_the_week.b_thursday = 1;
+				if (*(r+28) == 'y') programs[n].days_of_the_week.b_friday = 1;
+				if (*(r+34) == 'y') programs[n].days_of_the_week.b_saturday = 1;
+				if (*(r+40) == 'y') programs[n].days_of_the_week.b_sunday = 1;
+				if (*(r+46) == 'y') programs[n].days_of_the_week.b_hollidays = 1;
+			}
+
+			r = strstr(buf, "temperature");
+			if (r != NULL) {
+				m = ((*(r+12) - 0x30) * 10) + (*(r+13) - 0x30);
+				programs[n].temperature = m;
+			}
+			programs[n].crc = programs[n].startHour + programs[n].startMinute + programs[n].endHour + \
+											programs[n].endMinute + *((uint8_t*)&programs[n].days_of_the_week) + programs[n].temperature;
+		}
+
+	}
+
+	return Data_OK;
+}
+
+void ip_file(void) {
+	const char *filepath = "/spiffs/ip_data.hex";
+    FILE *fd = NULL;
+
+
+	fd = fopen(filepath, "w");
+	fwrite(&ipaddress, sizeof(uint32_t), 1, fd);
+	fwrite(&ipnetmask, sizeof(uint32_t), 1, fd);
+	fwrite(&ipgw, sizeof(uint32_t), 1, fd);
+	fclose(fd);
+}
+
 
 esp_err_t _http_event_handle(esp_http_client_event_t *evt)
 {
@@ -269,8 +438,8 @@ esp_err_t _http_event_handle(esp_http_client_event_t *evt)
         case HTTP_EVENT_ON_DATA:
 			ESP_LOGI(TAG, "------------------------------------------");
             ESP_LOGI(TAG, "HTTP_EVENT_ON_DATA, len=%d", evt->data_len);
-			if(strstr(evt->data, "/** Some message **/") != NULL){
-				ESP_LOGI(TAG, "/** Some message **/");
+			if(strstr(evt->data, "New record created successfully") != NULL){
+				ESP_LOGI(TAG, "We have a new record on MySql Database!");
 			}
 			if (!esp_http_client_is_chunked_response(evt->client)) {
                 ESP_LOGI(TAG, "Data length: %d", evt->data_len);
@@ -287,9 +456,9 @@ esp_err_t _http_event_handle(esp_http_client_event_t *evt)
     }
     return ESP_OK;
 }
+#endif
 
-/******NOT NEEDED**********NOT NEEDED*************NOT NEEDED**************NOT NEEDED***************NOT NEEDED*******************NOT NEEDED*********************NOT NEEDED***********NOT NEEDED****/
-#if(0)
+/* An HTTP GET handler */
 static esp_err_t get_handler(httpd_req_t *req){
     char*  buf;
     size_t buf_len;
@@ -517,14 +686,8 @@ static void connect_handler(void* arg, esp_event_base_t event_base, int32_t even
         *server = start_webserver();
     }
 }
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////
 
 
-#endif
 void app_main(void)
 {
     printf("Initialize TWDT\n");
@@ -559,25 +722,10 @@ void app_main(void)
     ESP_ERROR_CHECK(esp_netif_init());
     ESP_ERROR_CHECK(esp_event_loop_create_default());
 
-/*	static httpd_handle_t server = NULL;
-	#ifdef CONFIG_EXAMPLE_CONNECT_WIFI
-		ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_STA_GOT_IP, &connect_handler, &server));
-		ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENT, WIFI_EVENT_STA_DISCONNECTED, &disconnect_handler, &server));
-	#endif // CONFIG_EXAMPLE_CONNECT_WIFI
-	#ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
-		ESP_ERROR_CHECK(esp_event_handler_register(IP_EVENT, IP_EVENT_ETH_GOT_IP, &connect_handler, &server));
-		ESP_ERROR_CHECK(esp_event_handler_register(ETH_EVENT, ETHERNET_EVENT_DISCONNECTED, &disconnect_handler, &server));
-	#endif // CONFIG_EXAMPLE_CONNECT_ETHERNET*/
-
-    /* This helper function configures Wi-Fi or Ethernet, as selected in menuconfig.
-     * Read "Establishing Wi-Fi or Ethernet Connection" section in
-     * examples/protocols/README.md for more information about this function.
-*/
-//	  ESP_ERROR_CHECK(example_connect());
-//    ESP_ERROR_CHECK(wifi_init_apsta());
+    ESP_ERROR_CHECK(wifi_init_apsta());
 
     /* Initialize file storage */
-//    ESP_ERROR_CHECK(init_spiffs());
+    ESP_ERROR_CHECK(init_spiffs());
 
 
 	start_uart_event();
@@ -585,7 +733,5 @@ void app_main(void)
 	http_file_queue = xQueueCreate(8, sizeof(uint8_t*));
 	if(!http_file_queue) ESP_LOGI(TAG, "tx_queue ERR created");
 
-	///Configuations///
-	///Send requests///
     xTaskCreate(main_task, "main_task", 50000, NULL, 1|portPRIVILEGE_BIT, NULL);
 }

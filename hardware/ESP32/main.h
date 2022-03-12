@@ -56,4 +56,13 @@ enum ack{
 };
 
 ////////////////////////////////////////////////////////////////////////////////
+
+/*
+void init_programs_data (programData_t *programs);
+int make_file_data (char *buf, uint8_t mode);
+char* convert_uint8_charchar(char *buf, uint8_t *number);
+char* convert_hex_charchar(char *buf, uint8_t *number);
+*/
+
+////////////////////////////////////////////////////////////////////////////////
 #endif /* ! _MAIN_H_ */

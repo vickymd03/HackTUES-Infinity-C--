@@ -4,6 +4,7 @@
 #include "driver/gpio.h"
 #include "driver/uart.h"
 
+#include "uart.h"
 #include "main.h"
 #include "http.h"
 
@@ -18,11 +19,13 @@
 #define RD_BUF_SIZE (BUF_SIZE)
 
 
+//int sendData(const char* logName, const char* data);
 
 static const char *TAG="example uart";
 static QueueHandle_t uart1_queue;
 static QueueHandle_t tx_queue;
 
+void send_controls(uint8_t *ack_ptr);
 
 static void uart_event_task(void *pvParameters)
 {
@@ -67,21 +70,21 @@ static void uart_event_task(void *pvParameters)
 						if(i != 71) CRC += dtmp[i];
 					}
 					if(CRC == dtmp[71]){
-						//ESP_LOGI(TAG, "CRC = %d", CRC,);
 						if(dtmp[0] == 0x42 && dtmp[1] == 0x4d){
 							if(dtmp[70] == mlx90640){
 								ACK = OK_ACK;
 							}else if(dtmp[70] == ov7725){
 								ACK = OK_ACK;
-								if(http_file_queue != 0)
-                                    xQueueSend(http_file_queue, &ptr_dtmp, 1/portTICK_RATE_MS);
-							}else {
+								if(http_file_queue != 0) xQueueSend(http_file_queue, &ptr_dtmp, 1/portTICK_RATE_MS);
+							}else{
 								ACK = NAK;
 							}
 							k = 0;
-							//bzero(dtmp, RD_BUF_SIZE);
-							//free(dtmp);
-							//dtmp = NULL;
+							/*
+							bzero(dtmp, RD_BUF_SIZE);
+							free(dtmp);
+							dtmp = NULL;
+							*/
 						}else {
 							ACK = NAK;
 							ESP_LOGI(TAG, "Bad header");
@@ -92,44 +95,30 @@ static void uart_event_task(void *pvParameters)
 					}
 					if(tx_queue != 0) xQueueSend(tx_queue, &ACK, 1/portTICK_RATE_MS);
                     break;
-                //Event of HW FIFO overflow detected
                 case UART_FIFO_OVF:
                     ESP_LOGI(TAG, "hw fifo overflow");
-                    // If fifo overflow happened, you should consider adding flow control for your application.
-                    // The ISR has already reset the rx FIFO,
-                    // As an example, we directly flush the rx buffer here in order to read more data.
                     uart_flush_input(EX_UART_NUM);
                     xQueueReset(uart1_queue);
                     break;
-                //Event of UART ring buffer full
                 case UART_BUFFER_FULL:
                     ESP_LOGI(TAG, "ring buffer full");
-                    // If buffer full happened, you should consider encreasing your buffer size
-                    // As an example, we directly flush the rx buffer here in order to read more data.
                     uart_flush_input(EX_UART_NUM);
                     xQueueReset(uart1_queue);
                     break;
-                //Event of UART RX break detected
                 case UART_BREAK:
                     ESP_LOGI(TAG, "uart rx break");
                     break;
-                //Event of UART parity check error
                 case UART_PARITY_ERR:
                     ESP_LOGI(TAG, "uart parity error");
                     break;
-                //Event of UART frame error
                 case UART_FRAME_ERR:
                     ESP_LOGI(TAG, "uart frame error");
                     break;
-                //UART_PATTERN_DET
                 case UART_PATTERN_DET:
                     uart_get_buffered_data_len(EX_UART_NUM, &buffer_size);
                     int pos = uart_pattern_pop_pos(EX_UART_NUM);
                     ESP_LOGI(TAG, "[UART PATTERN DETECTED] pos: %d, buffered size: %d", pos, buffer_size);
                     if (pos == -1) {
-                        // There used to be a UART_PATTERN_DET event, but the pattern position queue is full so that it can not
-                        // record the position. We should set a larger queue size.
-                        // As an example, we directly flush the rx buffer here.
                         uart_flush_input(EX_UART_NUM);
                     } else {
                         uart_read_bytes(EX_UART_NUM, dtmp, pos, 100 / portTICK_PERIOD_MS);
@@ -140,16 +129,17 @@ static void uart_event_task(void *pvParameters)
                         ESP_LOGI(TAG, "read pat : %s", pat);
                     }
                     break;
-                //Others
                 default:
                     ESP_LOGI(TAG, "uart event type: %d", event.type);
                     break;
             }
         }
     }
-    //free(dtmp);
+    /*
+    free(dtmp);
+    dtmp = NULL;
+    */
     free(buf_dtmp);
-    //dtmp = NULL;
     buf_dtmp = NULL;
     vTaskDelete(NULL);
 }
@@ -159,15 +149,19 @@ static void tx_task(void *arg)
 	static const char *TX_TASK_TAG = "TX_TASK";
 	esp_log_level_set(TX_TASK_TAG, ESP_LOG_INFO);
 
-	uint8_t ACK[1];
+	uint8_t ACK[5];
 
 	while(1){
 		if(tx_queue != 0){
-			if(xQueueReceive(tx_queue, &ACK[0], 10)){
-				uint8_t txBytes = uart_write_bytes(UART_NUM_1, (uint8_t *)ACK, 1);
-				//ESP_LOGI(TAG, "Send_by_Tx (%d bytes, ACK = \'0x%02x\')", txBytes, ACK[0]);
-			}
-		}
+            for(uint8_t i = 0; i < 5; i++){
+                if(xQueueReceive(tx_queue, &ACK[i], 10)){
+                    printf("\n  %d - %c", ACK[i], ACK[i]);
+                    //uint8_t txBytes = uart_write_bytes(UART_NUM_1, (uint8_t*)"hello", 5);
+                    //ESP_LOGI(TAG, "Send_by_Tx (%d bytes, ACK = \'0x%02x\')", txBytes, ACK[0]);
+                }
+            }
+            uart_write_bytes(UART_NUM_1, &ACK[0], 5);
+    	}
 	}
 }
 
@@ -208,4 +202,10 @@ void start_uart_event(void)
 
 	tx_queue = xQueueCreate(8, sizeof(uint8_t));
 	if(!tx_queue) ESP_LOGI(TAG, "tx_queue ERR created");
+}
+
+void send_controls(uint8_t *ack_ptr){
+    for(int i = 0; i < sizeof(ack_ptr); i++){
+        xQueueSend(tx_queue, &ack_ptr[i], 1 / portTICK_RATE_MS);
+    }
 }

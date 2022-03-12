@@ -2,8 +2,11 @@
 #include <string.h>
 #include "esp_log.h"
 #include "esp_http_client.h"
+//#include "esp_eth.h"								// receive request
 #include "esp_tls.h"
 #include "main.h"
+#include "uart.h"
+#include "http.h"
 
 
 #define URL_post_esp_data "http://learningmoorree.000webhostapp.com/Measurement_shots/post-esp-data.php"
@@ -38,13 +41,9 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
              *  Check for chunked encoding is added as the URL for chunked encoding used in this example returns binary data.
              *  However, event handler can also be used in case chunked encoding is used.
              */
-            if (1) {
-            //if (!esp_http_client_is_chunked_response(evt->client)) {
-            //if (esp_http_client_is_chunked_response(evt->client)) {
+            if(1){
 				ESP_LOGI(TAG, "esp_http_client_is_chunked_response");
-                // If user_data buffer is configured, copy the response into the buffer
                 if (evt->user_data) {
-					//ESP_LOGI(TAG, "buf= %s", (char*)evt->data);
                     memcpy(evt->user_data + output_len, evt->data, evt->data_len);
                 } else {
                     if (output_buffer == NULL) {
@@ -58,8 +57,7 @@ esp_err_t _http_event_handler(esp_http_client_event_t *evt)
                     memcpy(output_buffer + output_len, evt->data, evt->data_len);
                 }
                 output_len += evt->data_len;
-            }//else ESP_LOGI(TAG, "esp_http_client_is_chunked_response");
-            //}else ESP_LOGI(TAG, "!esp_http_client_is_chunked_response");
+            }
 
             break;
         case HTTP_EVENT_ON_FINISH:
@@ -135,37 +133,13 @@ void send_request_for_controls(char *buf)
 #endif
 	ESP_LOGI(TAG, "Response: %s", output_buffer);	// TEST
 
-	if(strstr(output_buffer, "/** data from server **/")){
-		if(++index_send_measurement_struct == 50)  index_send_measurement_struct = 0;
-		ESP_LOGI(TAG, "Some message");	// TEST
-	}else if(strstr(output_buffer, "/** data from server **/")){
-		if(++index_send_event_struct == 10)  index_send_event_struct = 0;
-		ESP_LOGI(TAG, "Some message");	// TEST
+	if(strstr(output_buffer, "New measurement created successfully")){
+		ESP_LOGI(TAG, "New measurment made!");	// TEST
+	}else if(strstr(output_buffer, "New event_table created successfully")){
+		ESP_LOGI(TAG, "New event_table made!");	// TEST
 	}else if(strstr(output_buffer, "Error:")){
 		if(strstr(output_buffer, "doesn't exist")){
-			ESP_LOGI(TAG, "REASON FOR Error: doesn't exist");	// TEST
-
-			/*char* p = strstr(output_buffer, "measurements");
-		    if(p){
-				strtok(p, "_");
-				strcpy(buf, "api_key=tPmAT5Ab3j7F9&command=event_table&consumer_id=");
-				strcat(buf, strtok(NULL, "_"));
-				strcat(buf, "&event_id=");
-				strcat(buf, strtok(strtok(NULL, "_"), " "));
-				//ESP_LOGI(TAG, "buf: %s", buf);
-
-				strcpy(output_buffer, "");		// It work ???
-				esp_http_client_set_post_field(client, buf, strlen(buf));
-				ESP_LOGI(TAG, "Post_field: %s", buf);	// TEST
-				esp_err_t err = esp_http_client_perform(client);
-				if (err == ESP_OK) {
-					ESP_LOGI(TAG, "Status = %d, content_length = %d",
-								esp_http_client_get_status_code(client),
-								esp_http_client_get_content_length(client));	// TEST
-				}
-
-				ESP_LOGI(TAG, "Response: %s", output_buffer);	// TEST
-			}*/
+			ESP_LOGI(TAG, "REASON FOR Error: doesn't exist");
 		}
 	}else ESP_LOGI(TAG, "Unknown Error");
 
@@ -175,9 +149,10 @@ void send_request_for_controls(char *buf)
 void send_ov7725_data_to_API(uint8_t* file, uint16_t size_of_file)
 {
     char output_buffer[/*MAX_HTTP_OUTPUT_BUFFER*/1024] = {0};   // Buffer to store response of http request
-	char head[] = "--GreenBo\r\nContent-Disposition: form-data; name=\"shotFile\"; filename=\"frame.bin\"\r\nContent-Type: application/octet-stream\r\n\r\n";
+	char head[] = "--GreenBo\r\nContent-Disposition: form-data; name=\"shotFile\"; filename=\"SmartEM_shot.bin\"\r\nContent-Type: application/octet-stream\r\n\r\n";
 	char tail[] = "\r\n--GreenBo--\r\n";
 	uint8_t buf_post[38840];
+    uint8_t content_length[] = "hello";
 
 	uint16_t k = strlen(head);
 	for(uint16_t i = 0; i < k; i++){
@@ -199,18 +174,20 @@ void send_ov7725_data_to_API(uint8_t* file, uint16_t size_of_file)
 	esp_http_client_handle_t client = esp_http_client_init(&config);
 
 	esp_http_client_set_method(client, HTTP_METHOD_POST);
+    //esp_http_client_set_header(client, "Content-Length", "16");
     esp_http_client_set_header(client, "Content-Type", "multipart/form-data; boundary=GreenBo");
 	esp_http_client_set_post_field(client, (char*)buf_post, (strlen(head) + size_of_file + strlen(tail)));
 	//ESP_LOGI(TAG, "Post_field: %s", (char*)buf_post);
 	ESP_LOG_BUFFER_HEXDUMP(TAG, buf_post, 380, ESP_LOG_INFO);
 	esp_err_t err = esp_http_client_perform(client);
 	if (err == ESP_OK) {
-		ESP_LOGI(TAG, "Status = %d, content_length = %d",
-					esp_http_client_get_status_code(client),
-					esp_http_client_get_content_length(client));
+		ESP_LOGI(TAG, "Status = %d, content_length = %d", esp_http_client_get_status_code(client), esp_http_client_get_content_length(client));
 	}
 
 	ESP_LOGI(TAG, "Response: %s", output_buffer);	// TEST
+    if(strstr(output_buffer, "Successfull transaction")){
+        send_controls(&content_length);
+    }
 
 	esp_http_client_cleanup(client);
 }
