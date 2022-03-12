@@ -78,58 +78,58 @@
 
         <div class="moonwalker">
             <img src="static files\moonwalker.png" alt="moonwalker icon">
-            <button type="button" onclick="make_visible()" class="wheel-fl"></button>
+            <button type="button" onclick="set_visibility('flm', 'visible')" class="wheel-fl"></button>
             <div id="flm">
                 <canvas class="square"></canvas>
                 <p class="flw-text">Front Left Wheel</p>
                 <label class="speed-label" for="speed">Enter speed:</label>
-                <input class="speed" type="text" id="speed-flw" name="speedvalue" placeholder="Value from -20 to +20">
-                <label class="time-label" for="time">Enter time:</label>
-                <input class="time" type="text" id="time-flw" name="timevalue" placeholder="Value in seconds">
+                <input class="speed" type="number" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
+                <label class="time-label" for="time">Enter seconds:</label>
+                <input class="time" type="number" id="time" name="timevalue" placeholder="Value in seconds">
                 <label class="degrees-label" for="degrees">Enter degrees:</label>
-                <input class="degrees" type="text" id="degrees-flw" name="degreesvalue" placeholder="Value from -90° to +90°">
-                <button onclick="make_invisible()" type="button" id="btn-flw" class="submit-button btn btn-dark">Submit</button>
+                <input class="degrees" type="number" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
+                <button onclick="set_visibility('flm', 'hidden')" type="button" id="btn-flw" class="submit-button btn btn-dark">Submit</button>
             </div>
-            <button type="button" onclick="make_visible2()" class="wheel-fr"></button>
+            <button type="button" onclick="set_visibility('frm', 'visible')" class="wheel-fr"></button>
             <div id="frm">
                 <canvas class="square"></canvas>
                 <p class="frw-text">Front Right Wheel</p>
                 <label class="speed-label" for="speed">Enter speed:</label>
-                <input class="speed" type="text" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
-                <label class="time-label" for="time">Enter time:</label>
-                <input class="time" type="text" id="time" name="timevalue" placeholder="Value in seconds">
+                <input class="speed" type="number" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
+                <label class="time-label" for="time">Enter seconds:</label>
+                <input class="time" type="number" id="time" name="timevalue" placeholder="Value in seconds">
                 <label class="degrees-label" for="degrees">Enter degrees:</label>
-                <input class="degrees" type="text" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
-                <button onclick="make_invisible2()" type="button" id="btn-frw" class="submit-button btn btn-dark">Submit</button>
+                <input class="degrees" type="number" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
+                <button onclick="set_visibility('frm', 'hidden')" type="button" id="btn-frw" class="submit-button btn btn-dark">Submit</button>
             </div>
-            <button type="button" onclick="make_visible3()" class="wheel-rl"></button>
+            <button type="button" onclick="set_visibility('rlm', 'visible')" class="wheel-rl"></button>
             <div id="rlm">
                 <canvas class="square"></canvas>
                 <p class="rlw-text">Rear Left Wheel</p>
                 <label class="speed-label" for="speed">Enter speed:</label>
-                <input class="speed" type="text" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
-                <label class="time-label" for="time">Enter time:</label>
-                <input class="time" type="text" id="time" name="timevalue" placeholder="Value in seconds">
+                <input class="speed" type="number" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
+                <label class="time-label" for="time">Enter seconds:</label>
+                <input class="time" type="number" id="time" name="timevalue" placeholder="Value in seconds">
                 <label class="degrees-label" for="degrees">Enter degrees:</label>
-                <input class="degrees" type="text" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
-                <button onclick="make_invisible3()" type="button" id="btn-rlw" class="submit-button btn btn-dark">Submit</button>
+                <input class="degrees" type="number" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
+                <button onclick="set_visibility('rlm', 'hidden')" type="button" id="btn-rlw" class="submit-button btn btn-dark">Submit</button>
             </div>
-            <button type="button" onclick="make_visible4()" class="wheel-rr"></button>
+            <button type="button" onclick="set_visibility('rrm', 'visible')" class="wheel-rr"></button>
             <div id="rrm">
                 <canvas class="square"></canvas>
                 <p class="rrw-text">Rear Right Wheel</p>
                 <label class="speed-label" for="speed">Enter speed:</label>
-                <input class="speed" type="text" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
-                <label class="time-label" for="time">Enter time:</label>
-                <input class="time" type="text" id="time" name="timevalue" placeholder="Value in seconds">
+                <input class="speed" type="number" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
+                <label class="time-label" for="time">Enter seconds:</label>
+                <input class="time" type="number" id="time" name="timevalue" placeholder="Value in seconds">
                 <label class="degrees-label" for="degrees">Enter degrees:</label>
-                <input class="degrees" type="text" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
-                <button onclick="make_invisible4()" type="button" id="btn-rrw" class="submit-button btn btn-dark">Submit</button>
+                <input class="degrees" type="number" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
+                <button onclick="set_visibility('rrm', 'hidden')" type="button" id="btn-rrw" class="submit-button btn btn-dark">Submit</button>
             </div>
         </div>
 
         <div id="mySidenav" class="sidenav">
-            <button type="button" class="btn btn-light btn-sm br">
+            <button id="commit", type="button" class="btn btn-light btn-sm br">
                 S <br>
                 E <br>
                 N <br>

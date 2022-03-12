@@ -6,46 +6,51 @@ var Video = {
     }
 }
 
-function make_visible(){
-    document.getElementById("flm").style.visibility = "visible";
+function set_visibility(id, state) {
+    document.getElementById(id).style.visibility = state;
 }
 
-function make_invisible(){
-    document.getElementById("flm").style.visibility = "hidden";
+async function submitWheelMovement(wheelId, organ) {
+    const div = document.getElementById(wheelId);
+
+    const speed   = Number(div.querySelector('#speed')  .value);
+    const time    = Number(div.querySelector('#time')   .value);
+    const degrees = Number(div.querySelector('#degrees').value);
+
+    if (degrees != 0) {
+        await fetch('/webinterface/command', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'Rotate',
+                organ: 'WheelSteer' + organ,
+                degrees: degrees,
+            })
+        });
+    }
+
+    if (speed != 0 && time != 0) {
+        await fetch('/webinterface/command', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                type: 'Move',
+                organ: 'Wheel' + organ,
+                time: time,
+                speed: speed,
+            })
+        });
+    }
 }
 
-function make_visible2(){
-    document.getElementById("frm").style.visibility = "visible";
+async function commitQueue() {
+    await fetch('/webinterface/commit', { method: 'POST' });
 }
 
-function make_invisible2(){
-    document.getElementById("frm").style.visibility = "hidden";
-}
-
-function make_visible3(){
-    document.getElementById("rlm").style.visibility = "visible";
-}
-
-function make_invisible3(){
-    document.getElementById("rlm").style.visibility = "hidden";
-}
-
-function make_visible4(){
-    document.getElementById("rrm").style.visibility = "visible";
-}
-
-function make_invisible4(){
-    document.getElementById("rrm").style.visibility = "hidden";
-}
-
-$(document).ready(function () {
-    $('select-camera').selectize({
-        sortField: 'text' 
-    });
-});
-
-$(document).ready(function () {
-    $('select-controller').selectize({
-        sortField: 'text' 
-    });
+window.addEventListener('DOMContentLoaded', (event) => {
+    document.getElementById('btn-flw').addEventListener('click', () => submitWheelMovement('flm', 'FrontLeft'));
+    document.getElementById('btn-frw').addEventListener('click', () => submitWheelMovement('frm', 'FrontRight'));
+    document.getElementById('btn-rlw').addEventListener('click', () => submitWheelMovement('rlm', 'BackLeft'));
+    document.getElementById('btn-rrw').addEventListener('click', () => submitWheelMovement('rrm', 'BackRight'));
+    document.getElementById('commit').addEventListener('click', () => commitQueue());
 });

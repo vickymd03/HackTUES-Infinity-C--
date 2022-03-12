@@ -1,28 +1,28 @@
 export enum Organ {
-    WheelFrontLeft,
-    WheelFrontRight,
-    WheelBackLeft,
-    WheelBackRight,
+    WheelFrontLeft  = "WheelFrontLeft",
+    WheelFrontRight = "WheelFrontRight",
+    WheelBackLeft   = "WheelBackLeft",
+    WheelBackRight  = "WheelBackRight",
 
-    WheelSteerFrontLeft,
-    WheelSteerFrontRight,
-    WheelSteerBackLeft,
-    WheelSteerBackRight,
+    WheelSteerFrontLeft  = "WheelSteerFrontLeft",
+    WheelSteerFrontRight = "WheelSteerFrontRight",
+    WheelSteerBackLeft   = "WheelSteerBackLeft",
+    WheelSteerBackRight  = "WheelSteerBackRight",
 
-    SolarPanel,
-    Lights,
-    Lamp,
-    Camera,
+    SolarPanel = "SolarPanel",
+    Lights     = "Lights",
+    Lamp       = "Lamp",
+    Camera     = "Camera",
 
-    HandMain,
-    HandJoint1,
-    HandJoint2,
-    HandClaw,
+    HandMain   = "HandMain",
+    HandJoint1 = "HandJoint1",
+    HandJoint2 = "HandJoint2",
+    HandClaw   = "HandClaw",
 
-    SolarPanelPower,
-    PowerSupply,
+    SolarPanelPower = "SolarPanelPower",
+    PowerSupply     = "PowerSupply",
 
-    Pause,
+    Pause = "Pause",
 };
 
 export enum CommandType {
@@ -122,93 +122,126 @@ export const getCommitedCommandQueue = () => {
     return commitedCommandQueue;
 }
 
+export const clearCommitedCommandQueue = () => {
+    return commitedCommandQueue;
+}
+
 const parseMoveCommandFromJson = (json): MoveCommand => {
-    let ret: MoveCommand;
+    let organ;
+    let speed;
+    let time;
+
     switch (json.organ) {
-        case 'WheelFrontLeft':  ret.organ = Organ.WheelFrontLeft;  break;
-        case 'WheelFrontRight': ret.organ = Organ.WheelFrontRight; break;
-        case 'WheelBackLeft':   ret.organ = Organ.WheelBackLeft;   break;
-        case 'WheelBackRight':  ret.organ = Organ.WheelBackRight;  break;
+        case 'WheelFrontLeft':  organ = Organ.WheelFrontLeft;  break;
+        case 'WheelFrontRight': organ = Organ.WheelFrontRight; break;
+        case 'WheelBackLeft':   organ = Organ.WheelBackLeft;   break;
+        case 'WheelBackRight':  organ = Organ.WheelBackRight;  break;
         default: return null;
     }
 
     if (typeof(json?.speed) !== 'number') return null;
     if (typeof(json?.time)  !== 'number') return null;
 
-    ret.speed = json.speed;
-    ret.time  = json.time;
+    speed = json.speed;
+    time  = json.time;
 
-    return ret;
+    return {
+        type:  CommandType.Move,
+        organ: organ,
+        speed: speed,
+        time:  time,
+    };
 }
 
 const parseRotateCommandFromJson = (json): RotateCommand => {
-    let ret: RotateCommand;
+    let organ;
+    let degrees;
+
     switch (json.organ) {
-        case 'WheelSteerFrontLeft':  ret.organ = Organ.WheelSteerFrontLeft;  break;
-        case 'WheelSteerFrontRight': ret.organ = Organ.WheelSteerFrontRight; break;
-        case 'WheelSteerBackLeft':   ret.organ = Organ.WheelSteerBackLeft;   break;
-        case 'WheelSteerBackRight':  ret.organ = Organ.WheelSteerBackRight;  break;
-        case 'SolarPanel':           ret.organ = Organ.SolarPanel;           break;
-        case 'Camera':               ret.organ = Organ.Camera;               break;
-        case 'HandMain':             ret.organ = Organ.HandMain;             break;
-        case 'HandJoint1':           ret.organ = Organ.HandJoint1;           break;
-        case 'HandJoint2':           ret.organ = Organ.HandJoint2;           break;
-        case 'HandClaw':             ret.organ = Organ.HandClaw;             break;
+        case 'WheelSteerFrontLeft':  organ = Organ.WheelSteerFrontLeft;  break;
+        case 'WheelSteerFrontRight': organ = Organ.WheelSteerFrontRight; break;
+        case 'WheelSteerBackLeft':   organ = Organ.WheelSteerBackLeft;   break;
+        case 'WheelSteerBackRight':  organ = Organ.WheelSteerBackRight;  break;
+        case 'SolarPanel':           organ = Organ.SolarPanel;           break;
+        case 'Camera':               organ = Organ.Camera;               break;
+        case 'HandMain':             organ = Organ.HandMain;             break;
+        case 'HandJoint1':           organ = Organ.HandJoint1;           break;
+        case 'HandJoint2':           organ = Organ.HandJoint2;           break;
+        case 'HandClaw':             organ = Organ.HandClaw;             break;
         default: return null;
     }
 
     if (typeof(json?.degrees) !== 'number') return null;
-    ret.degrees = json.degrees;
+    degrees = json.degrees;
 
-    return ret;
+    return {
+        type:    CommandType.Rotate,
+        organ:   organ,
+        degrees: degrees,
+    };
 }
 
 const parseBoolCommandFromJson = (json): BoolCommand => {
-    let ret: BoolCommand;
+    let organ;
+    let bool;
 
     switch (json.organ) {
-        case 'Lights':          ret.organ = Organ.Lights;          break;
-        case 'Lamp':            ret.organ = Organ.Lamp;            break;
-        case 'SolarPanelPower': ret.organ = Organ.SolarPanelPower; break;
+        case 'Lights':          organ = Organ.Lights;          break;
+        case 'Lamp':            organ = Organ.Lamp;            break;
+        case 'SolarPanelPower': organ = Organ.SolarPanelPower; break;
         default: return null;
     }
 
     if (typeof(json?.bool) !== 'boolean') return null;
-    ret.bool = json.bool;
+    bool = json.bool;
 
-    return ret;
+    return {
+        type:  CommandType.Bool,
+        organ: organ,
+        bool: bool,
+    };
 }
 
 const parsePowerCommandFromJson = (json): PowerCommand => {
-    let ret: PowerCommand;
+    let organ;
+    let state;
 
     if (json.organ !== 'PowerSupply') return null;
-    ret.organ = Organ.PowerSupply;
+    organ = Organ.PowerSupply;
 
     switch(json.state) {
-        case 'On':    ret.state = PowerState.On;    break;
-        case 'Sleep': ret.state = PowerState.Sleep; break;
-        case 'Off':   ret.state = PowerState.Off;   break;
+        case 'On':    state = PowerState.On;    break;
+        case 'Sleep': state = PowerState.Sleep; break;
+        case 'Off':   state = PowerState.Off;   break;
         default: return null;
     }
 
-    return ret;
+    return {
+        type:  CommandType.Power,
+        organ: organ,
+        state: state,
+    };
 }
 
 const parseTimeCommandFromJson = (json): TimeCommand => {
-    let ret: TimeCommand;
+    let organ;
+    let time;
 
     if (json.organ !== 'Pause') return null;
-    ret.organ = Organ.Pause;
+    organ = Organ.Pause;
 
     if (typeof(json?.time) !== 'number') return null;
-    ret.time = json.time;
+    time = json.time;
 
-    return ret;
+    return {
+        type:  CommandType.Time,
+        organ: organ,
+        time: time,
+    };
 }
 
 export const parseCommandFromJson = (json): Command => {
-    switch (json.type) {
+    switch (json?.type) {
         case 'Move':   return parseMoveCommandFromJson(json);
         case 'Rotate': return parseRotateCommandFromJson(json);
         case 'Bool':   return parseBoolCommandFromJson(json);
