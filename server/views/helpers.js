@@ -6,14 +6,36 @@ var Video = {
     }
 }
 
-function openNav() {
-    document.getElementById("mySidenav").style.width = "250px";
-    document.getElementById("main").style.marginLeft = "250px";
+function make_visible(){
+    document.getElementById("flm").style.visibility = "visible";
 }
-  
-function closeNav() {
-    document.getElementById("mySidenav").style.width = "0";
-    document.getElementById("main").style.marginLeft= "0";
+
+function make_invisible(){
+    document.getElementById("flm").style.visibility = "hidden";
+}
+
+function make_visible2(){
+    document.getElementById("frm").style.visibility = "visible";
+}
+
+function make_invisible2(){
+    document.getElementById("frm").style.visibility = "hidden";
+}
+
+function make_visible3(){
+    document.getElementById("rlm").style.visibility = "visible";
+}
+
+function make_invisible3(){
+    document.getElementById("rlm").style.visibility = "hidden";
+}
+
+function make_visible4(){
+    document.getElementById("rrm").style.visibility = "visible";
+}
+
+function make_invisible4(){
+    document.getElementById("rrm").style.visibility = "hidden";
 }
 
 $(document).ready(function () {

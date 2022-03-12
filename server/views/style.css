@@ -16,12 +16,20 @@ img {
   object-fit: contain;
 }
 
+.header {
+  color: rgb(248, 248, 248);
+  font-size: 64px;
+  font-weight: 900;
+  text-align: center;
+  font-family: "Brush Script MT", cursive;
+}
+
 .video-stream {
   position: absolute;
-  top: 30px;
+  top: 100px;
   left: 30px;
   width: 500px;
-  height: 350px;
+  height: 410px;
   border: 1px;
   border-style: solid;
   border-color: white;
@@ -29,7 +37,7 @@ img {
 
 .camera-switch {
   position: absolute;
-  top: 350px;
+  top: 480px;
   left: 30px;
 }
 
@@ -40,7 +48,7 @@ img {
 
 .monitoring {
   position: absolute;
-  top: 425px;
+  top: 540px;
   left: 30px;
 }
 
@@ -100,20 +108,20 @@ img {
 
 .logs-terminal {
   position: absolute;
-  top: 30px;
+  top: 100px;
   left: 580px;
 }
 
 .LogsCanvas {
-  width: 340px;
+  width: 380px;
   height: 200px;
   border: 1px solid white;
 }
 
 .stop {
   position: absolute;
-  top: 265px;
-  left: 688px;
+  top: 360px;
+  left: 710px;
 }
 
 .stop-button {
@@ -129,7 +137,7 @@ img {
 
 .control-mode-buttons {
   position: absolute;
-  top: 410px;
+  top: 524px;
   left: 580px;
 }
 
@@ -143,7 +151,7 @@ img {
 .switch {
   position: absolute;
   top: 0px;
-  left: 283px;
+  left: 320px;
   display: inline-block;
   width: 50px;
   height: 25px;
@@ -152,7 +160,7 @@ img {
 .switch-2 {
   position: absolute;
   top: 45px;
-  left: 283px;
+  left: 320px;
   display: inline-block;
   width: 50px;
   height: 25px;
@@ -161,7 +169,7 @@ img {
 .switch-3 {
   position: absolute;
   top: 90px;
-  left: 283px;
+  left: 320px;
   display: inline-block;
   width: 50px;
   height: 25px;
@@ -170,7 +178,7 @@ img {
 .switch-4 {
   position: absolute;
   top: 135px;
-  left: 283px;
+  left: 320px;
   display: inline-block;
   width: 50px;
   height: 25px;
@@ -229,79 +237,188 @@ input:checked + .slider:before {
 }
 
 .moonwalker {
-  height: 350px;
-  width: 350px;
+  height: 450px;
+  width: 450px;
   position: absolute;
-  top: -30px;
-  right: 220px;
+  top: 160px;
+  right: 70px;
 }
 
-.controllers-switch {
+.wheel-fl {
   position: absolute;
-  top: 410px;
+  top: 110px;
   right: 370px;
+  width: 50px;
+  height: 80px;
+  border-radius: 20%;
+  background-color: #808080;
 }
 
-.selection-2 {
-  width: 200px;
-  height: 30px;
-}
-
-.buttons {
+.wheel-fr {
   position: absolute;
-  top: -4px;
-  left: 210px;
+  top: 110px;
+  right: 37px;
+  width: 50px;
+  height: 80px;
+  border-radius: 20%;
+  background-color: #808080;
 }
 
-.button-1 {
+.wheel-rl {
   position: absolute;
-  background-color: white;
-  border: none;
-  padding: 2px 10px;
-  text-align: center;
-  font-weight: bold;
+  top: 315px;
+  right: 370px;
+  width: 50px;
+  height: 80px;
+  border-radius: 20%;
+  background-color: #808080;
+}
+
+.wheel-rr {
+  position: absolute;
+  top: 315px;
+  right: 37px;
+  width: 50px;
+  height: 80px;
+  border-radius: 20%;
+  background-color: #808080;
+}
+
+#flm {
+  position: absolute;
+  top: 150px;
+  left: 117px;
+  visibility: hidden;
+}
+
+#frm {
+  position: absolute;
+  top: 150px;
+  left: 117px;
+  visibility: hidden;
+}
+
+#rlm {
+  position: absolute;
+  top: 150px;
+  left: 117px;
+  visibility: hidden;
+}
+
+#rrm {
+  position: absolute;
+  top: 150px;
+  left: 117px;
+  visibility: hidden;
+}
+
+.square {
+  width: 210px;
+  height: 250px;
+  background-color: rgb(246, 244, 244);
+  border: 1px;
+  border-radius: 5%;
+  border-style: solid;
+  border-color: black;
+}
+
+.flw-text {
+  position: absolute;
+  top: 10px;
+  left: 24px;
   font-size: 16px;
-  margin: 4px 2px;
-  opacity: 1;
-  transition: 0.3s;
-}
-
-.value {
-  position: absolute;
-  left: 48px;
-  font-size: 24px;
   font-weight: bold;
-  color: white;
+  text-transform: uppercase;
+  color: black;
 }
 
-.button-2 {
+.frw-text {
   position: absolute;
-  left: 75px;
-  background-color: white;
-  border: none;
-  padding: 2px 10px;
-  text-align: center;
-  font-weight: bold;
-  font-size: 16px;
-  margin: 4px 2px;
-  opacity: 1;
-  transition: 0.3s;
-}
-
-.button-save {
-  position: absolute;
-  top: 50px;
+  top: 10px;
   left: 20px;
-  background-color: #a3a3c2;
-  border: solid;
-  border-color: #a3a3c2;
-  border-radius: 10%;
-  padding: 4px 8px;
-  text-align: center;
-  font-weight: bold;
   font-size: 16px;
-  color: white;
-  margin: 4px 2px;
-  opacity: 1;
-  transition: 0.3s;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: black;
+}
+
+.rlw-text {
+  position: absolute;
+  top: 10px;
+  left: 29px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: black;
+}
+
+.rrw-text {
+  position: absolute;
+  top: 10px;
+  left: 25px;
+  font-size: 16px;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: black;
+}
+
+.speed-label {
+  position: absolute;
+  top: 38px;
+  left: 10px;
+  font-size: 14px;
+}
+
+.speed {
+  position: absolute;
+  top: 60px;
+  left: 10px;
+}
+
+.time-label {
+  position: absolute;
+  top: 95px;
+  left: 10px;
+  font-size: 14px;
+}
+
+.time {
+  position: absolute;
+  top: 117px;
+  left: 10px;
+}
+
+.degrees-label {
+  position: absolute;
+  top: 152px;
+  left: 10px;
+  font-size: 14px;
+}
+
+.degrees {
+  position: absolute;
+  top: 174px;
+  left: 10px;
+}
+
+.submit-button {
+  position: absolute;
+  top: 208px;
+  left: 68px;
+}
+
+.sidenav {
+  height: 100%;
+  width: 40px;
+  right: 0px;
+  top: 0px;
+  position: fixed;
+  background-color: rgb(76, 0, 56);
+}
+
+.br {
+  position: absolute;
+  bottom: 30px;
+  right: 7px;
+  text-align: center;
 }

@@ -11,6 +11,7 @@
 		<script src="helpers.js"></script>
     </head>
     <body>
+        <h1 class="header">GreenBo</h1>
         <div class="video-stream">
             <canvas id="VideoCanvas"></canvas>
         </div>
@@ -77,35 +78,64 @@
 
         <div class="moonwalker">
             <img src="static files\moonwalker.png" alt="moonwalker icon">
-        </div>
-
-        <div class="controllers-switch">
-            <select class="selection-2" id="select-controller" placeholder="Select controller...">
-                <optgroup label="Direction Controllers">
-                    <option value="1">Front Left Wheel</option>
-                    <option value="2">Front Right Wheel</option>
-                    <option value="3">Rear Left Wheel</option>
-                    <option value="4">Rear Right Wheel</option>
-                    <option value="5">Turn Left With Front Wheel</option>
-                    <option value="6">Turn Right With Front Wheel</option>
-                    <option value="7">Turn Left With Rear Wheel</option>
-                    <option value="8">Turn Right With Rear Wheel</option>
-                </optgroup>
-                <optgroup label="Features">
-                    <option value="9">Solar Panel Control</option>
-                    <option value="10">Camera Control</option>
-                    <option value="11">Main Hand</option>
-                    <option value="12">First Shoulder</option>
-                    <option value="13">Second Shoulder</option>
-                    <option value="14">Claw</option>
-                </optgroup>
-			</select>
-            <div class="buttons">
-                <button type="button" class="button-1">–</button>
-                <p class="value">1</p>
-                <button type="button" class="button-2">+</button>
-                <button type="button" class="button-save">SAVE</button>
+            <button type="button" onclick="make_visible()" class="wheel-fl"></button>
+            <div id="flm">
+                <canvas class="square"></canvas>
+                <p class="flw-text">Front Left Wheel</p>
+                <label class="speed-label" for="speed">Enter speed:</label>
+                <input class="speed" type="text" id="speed-flw" name="speedvalue" placeholder="Value from -20 to +20">
+                <label class="time-label" for="time">Enter time:</label>
+                <input class="time" type="text" id="time-flw" name="timevalue" placeholder="Value in seconds">
+                <label class="degrees-label" for="degrees">Enter degrees:</label>
+                <input class="degrees" type="text" id="degrees-flw" name="degreesvalue" placeholder="Value from -90° to +90°">
+                <button onclick="make_invisible()" type="button" id="btn-flw" class="submit-button btn btn-dark">Submit</button>
+            </div>
+            <button type="button" onclick="make_visible2()" class="wheel-fr"></button>
+            <div id="frm">
+                <canvas class="square"></canvas>
+                <p class="frw-text">Front Right Wheel</p>
+                <label class="speed-label" for="speed">Enter speed:</label>
+                <input class="speed" type="text" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
+                <label class="time-label" for="time">Enter time:</label>
+                <input class="time" type="text" id="time" name="timevalue" placeholder="Value in seconds">
+                <label class="degrees-label" for="degrees">Enter degrees:</label>
+                <input class="degrees" type="text" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
+                <button onclick="make_invisible2()" type="button" id="btn-frw" class="submit-button btn btn-dark">Submit</button>
+            </div>
+            <button type="button" onclick="make_visible3()" class="wheel-rl"></button>
+            <div id="rlm">
+                <canvas class="square"></canvas>
+                <p class="rlw-text">Rear Left Wheel</p>
+                <label class="speed-label" for="speed">Enter speed:</label>
+                <input class="speed" type="text" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
+                <label class="time-label" for="time">Enter time:</label>
+                <input class="time" type="text" id="time" name="timevalue" placeholder="Value in seconds">
+                <label class="degrees-label" for="degrees">Enter degrees:</label>
+                <input class="degrees" type="text" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
+                <button onclick="make_invisible3()" type="button" id="btn-rlw" class="submit-button btn btn-dark">Submit</button>
+            </div>
+            <button type="button" onclick="make_visible4()" class="wheel-rr"></button>
+            <div id="rrm">
+                <canvas class="square"></canvas>
+                <p class="rrw-text">Rear Right Wheel</p>
+                <label class="speed-label" for="speed">Enter speed:</label>
+                <input class="speed" type="text" id="speed" name="speedvalue" placeholder="Value from -20 to +20">
+                <label class="time-label" for="time">Enter time:</label>
+                <input class="time" type="text" id="time" name="timevalue" placeholder="Value in seconds">
+                <label class="degrees-label" for="degrees">Enter degrees:</label>
+                <input class="degrees" type="text" id="degrees" name="degreesvalue" placeholder="Value from -90° to +90°">
+                <button onclick="make_invisible4()" type="button" id="btn-rrw" class="submit-button btn btn-dark">Submit</button>
             </div>
         </div>
+
+        <div id="mySidenav" class="sidenav">
+            <button type="button" class="btn btn-light btn-sm br">
+                S <br>
+                E <br>
+                N <br>
+                D <br>
+            </button>
+		</div>
+    </div>
     </body>
 </html>
