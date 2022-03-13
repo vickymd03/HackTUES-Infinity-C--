@@ -1,11 +1,11 @@
 /**
   ******************************************************************************
-  *                                 GreenBo         
+  *                                 GreenBo
   *                           The Embedded Experts
   ******************************************************************************
   * @file    main.c
   * @brief
-  *          
+  *
   ******************************************************************************
   * @attention
   *
@@ -36,6 +36,7 @@
 #include "lcd.h"
 #include "BMP.h"
 #include "servo.h"
+#include "controls.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -68,6 +69,8 @@ uint16_t pic[FrameWidth][FrameHeight];
 uint8_t sendBuf[80 + (FrameWidth * FrameHeight * 2)];
 uint32_t DCMI_FrameIsReady;
 uint32_t Camera_FPS=0;
+uint8_t sendInfoBuff[1024];
+uint8_t recieveControlsBuff[1024];
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -79,7 +82,7 @@ static void MPU_Config(void)
 
   /* Disables the MPU */
   HAL_MPU_Disable();
-	
+
   /* Configure the MPU attributes for the QSPI 256MB without instruction access */
   MPU_InitStruct.Enable           = MPU_REGION_ENABLE;
   MPU_InitStruct.Number           = MPU_REGION_NUMBER0;
@@ -93,7 +96,7 @@ static void MPU_Config(void)
   MPU_InitStruct.TypeExtField     = MPU_TEX_LEVEL1;
   MPU_InitStruct.SubRegionDisable = 0x00;
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-	
+
   /* Configure the MPU attributes for the QSPI 8MB (QSPI Flash Size) to Cacheable WT */
   MPU_InitStruct.Enable           = MPU_REGION_ENABLE;
   MPU_InitStruct.Number           = MPU_REGION_NUMBER1;
@@ -107,7 +110,7 @@ static void MPU_Config(void)
   MPU_InitStruct.TypeExtField     = MPU_TEX_LEVEL1;
   MPU_InitStruct.SubRegionDisable = 0x00;
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-	
+
   /* Setup AXI SRAM in Cacheable WB */
   MPU_InitStruct.Enable           = MPU_REGION_ENABLE;
   MPU_InitStruct.BaseAddress      = D1_AXISRAM_BASE;
@@ -121,7 +124,7 @@ static void MPU_Config(void)
   MPU_InitStruct.SubRegionDisable = 0x00;
   MPU_InitStruct.DisableExec      = MPU_INSTRUCTION_ACCESS_ENABLE;
   HAL_MPU_ConfigRegion(&MPU_InitStruct);
-	
+
   /* Enables the MPU */
   HAL_MPU_Enable(MPU_PRIVILEGED_DEFAULT);
 }
@@ -134,7 +137,7 @@ static void CPU_CACHE_Enable(void)
   /* Enable D-Cache */
   SCB_EnableDCache();
 }
-                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              
+
 void LED_Blink(uint32_t Hdelay, uint32_t Ldelay)
 {
   HAL_GPIO_WritePin(PE3_GPIO_Port, PE3_Pin, GPIO_PIN_SET);
@@ -191,7 +194,7 @@ int main(void)
   BitMapFileHeader_init();
   /* USER CODE BEGIN 2 */
   uint8_t text[20];
-	
+
   LCD_Test();
 
   sprintf((char *)&text, "Camera Not Found");
@@ -206,7 +209,7 @@ int main(void)
 	#endif
 	//clean Ypos 58
 	ST7735_LCD_Driver.FillRect(&st7735_pObj, 0, 58, ST7735Ctx.Width, 16, BLACK);
-	
+
   while (HAL_GPIO_ReadPin(KEY_GPIO_Port, KEY_Pin) == GPIO_PIN_RESET)
   {
 
@@ -235,7 +238,7 @@ int main(void)
     if (DCMI_FrameIsReady)
     {
       DCMI_FrameIsReady = 0;
-			
+
       #ifdef TFT96
       ST7735_FillRGBRect(&st7735_pObj, 0, 0, (uint8_t *)&pic[20][0], ST7735Ctx.Width, 80);
       #elif TFT18
@@ -243,7 +246,7 @@ int main(void)
       #endif
       sprintf((char *)&text,"%dFPS",Camera_FPS);
       LCD_ShowString(5,5,60,16,12,text);
-      
+
       LED_Blink(1, 1);
 
       static uint8_t test_flag = 1;
@@ -335,7 +338,7 @@ void SystemClock_Config(void)
 void HAL_DCMI_FrameEventCallback(DCMI_HandleTypeDef *hdcmi)
 {
 	static uint32_t count = 0,tick = 0;
-	
+
 	if(HAL_GetTick() - tick >= 1000)
 	{
 		tick = HAL_GetTick();
@@ -343,7 +346,7 @@ void HAL_DCMI_FrameEventCallback(DCMI_HandleTypeDef *hdcmi)
 		count = 0;
 	}
 	count ++;
-	
+
   DCMI_FrameIsReady = 1;
 }
 

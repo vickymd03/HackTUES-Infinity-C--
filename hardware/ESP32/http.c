@@ -16,6 +16,8 @@
 
 QueueHandle_t http_file_queue;
 
+char output_buffer[/*MAX_HTTP_OUTPUT_BUFFER*/1024] = {0};   // Buffer to store response of http request
+
 static const char *TAG="example";
 
 esp_err_t _http_event_handler(esp_http_client_event_t *evt)
@@ -148,11 +150,9 @@ void send_request_for_controls(char *buf)
 
 void send_ov7725_data_to_API(uint8_t* file, uint16_t size_of_file)
 {
-    char output_buffer[/*MAX_HTTP_OUTPUT_BUFFER*/1024] = {0};   // Buffer to store response of http request
 	char head[] = "--GreenBo\r\nContent-Disposition: form-data; name=\"shotFile\"; filename=\"SmartEM_shot.bin\"\r\nContent-Type: application/octet-stream\r\n\r\n";
 	char tail[] = "\r\n--GreenBo--\r\n";
 	uint8_t buf_post[38840];
-    uint8_t content_length[] = "hello";
 
 	uint16_t k = strlen(head);
 	for(uint16_t i = 0; i < k; i++){
@@ -184,7 +184,7 @@ void send_ov7725_data_to_API(uint8_t* file, uint16_t size_of_file)
 		ESP_LOGI(TAG, "Status = %d, content_length = %d", esp_http_client_get_status_code(client), esp_http_client_get_content_length(client));
 	}
 
-	ESP_LOGI(TAG, "Response: %s", output_buffer);	// TEST
+	ESP_LOGI(TAG, "Response received!");	// TEST
     if(1/*strstr(output_buffer, "Successfull transaction")*/){
         send_controls((uint8_t*)&output_buffer[0]);
     }

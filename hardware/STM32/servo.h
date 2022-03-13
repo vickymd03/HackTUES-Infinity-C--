@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header /
 /*
   ******************************************************************************
-  *                                 GreenBo         
+  *                                 GreenBo
   *                           The Embedded Experts
   ******************************************************************************
   * @file           : BMP.h
@@ -61,4 +61,4 @@ void Init_TIM2();
 
 #endif /* __SERVO_H */
 
-/************************ (C) COPYRIGHT GreenBo ************END OF FILE/
+/************************ (C) COPYRIGHT GreenBo ************END OF FILE****/

@@ -1,7 +1,7 @@
 /* USER CODE BEGIN Header */
 /**
   ******************************************************************************
-  *                                 GreenBo         
+  *                                 GreenBo
   *                           The Embedded Experts
   ******************************************************************************
   * @file           : main.h
@@ -52,6 +52,8 @@ extern "C" {
 /* Exported constants --------------------------------------------------------*/
 extern uint16_t pic[FrameWidth][FrameHeight];
 extern uint8_t sendBuf[80 + (FrameWidth * FrameHeight * 2)];
+extern uint8_t sendInfoBuff[1024];
+extern uint8_t recieveControlsBuff[1024];
 /* Exported macro ------------------------------------------------------------*/
 
 /* Exported functions prototypes ---------------------------------------------*/

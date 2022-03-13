@@ -95,7 +95,7 @@ static void uart_event_task(void *pvParameters)
 						ACK = NAK;
 						ESP_LOGI(TAG, "Bad CRC sum");
 					}
-					if(tx_queue != 0) xQueueSend(tx_queue, &ACK, 1/portTICK_RATE_MS);
+					//if(tx_queue != 0) xQueueSend(tx_queue, &ACK, 1/portTICK_RATE_MS);
                     break;
                 case UART_FIFO_OVF:
                     ESP_LOGI(TAG, "hw fifo overflow");
@@ -182,6 +182,8 @@ void start_uart_event(void)
     uart_driver_install(EX_UART_NUM, 2048 * 2, 1024 * 2, 20, &uart1_queue, 0);
     uart_param_config(EX_UART_NUM, &uart_config);
 
+    for(int i = 0; i < sizeof(controls_buffer); i++)
+        controls_buffer[i] = 0;
     //Set UART log level
     esp_log_level_set(TAG, ESP_LOG_INFO);
     //Set UART pins (using UART0 default pins ie no changes.)
@@ -204,11 +206,16 @@ void start_uart_event(void)
 }
 
 void send_controls(uint8_t *ack_ptr){
+    uint8_t _CRC[1];
+    _CRC[0] = 0x77 + 0x25 + 0x59;
+
     controls_buffer[0] = 0x77;
     controls_buffer[1] = 0x25;
     controls_buffer[2] = 0x59;
-    for(int i = 3; i < 1024; i++)
+    for(int i = 3; i < 1024; i++){
         controls_buffer[i] = ack_ptr[i - 3];
-    controls_buffer[1027] = 0x59;
-    xQueueSend(tx_queue, &ack_ptr[0], 1 / portTICK_RATE_MS);
+        _CRC[0] += controls_buffer[i];
+    }
+    controls_buffer[1027] = _CRC[0];
+    xQueueSend(tx_queue, &_CRC[0], 1 / portTICK_RATE_MS);
 }
